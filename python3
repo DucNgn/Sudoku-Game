@@ -1,10 +1,10 @@
-
 def solve(board):
     print('Solving')
     (subMatrixDigit, RowDigit, ColDigit) = setUpBitwises(board)
-    #print(subMatrixDigit)
+    print(subMatrixDigit)
     #print(RowDigit)
     #print(ColDigit)
+
     initPos = (0, 0)
     if(backtracking(board, initPos, subMatrixDigit, RowDigit, ColDigit) is True):
         print('Solved')
@@ -21,7 +21,7 @@ def setUpBitwises(board):
         for x in range(9):
             if(board[y][x] > 0):
                 value = board[y][x]
-                digitValue = 1 << (value - 1) # Move the position of bit 1 (value -1) left
+                digitValue = 1 << (value - 1)
                 subMatrixDigit[int(y / 3)][int(x / 3)] |= digitValue
                 RowDigit[y] |= digitValue
                 ColDigit[x] |= digitValue
@@ -45,7 +45,7 @@ def backtracking(board, pos, subMatrixDigit, RowDigit, ColDigit):
 
     if(board[y][x] == 0):
         #print("Found an empty")
-        for i in range(1, 10):
+        for i in guessRange:
             #print("Pos y = ", y, " x = ", x , " test i = ", i)
             digit = 1 << (i - 1)
             if(not existed(digit, pos, subMatrixDigit, RowDigit, ColDigit)):

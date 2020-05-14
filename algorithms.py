@@ -1,10 +1,7 @@
-
 def solve(board):
     print('Solving')
     (subMatrixDigit, RowDigit, ColDigit) = setUpBitwises(board)
-    #print(subMatrixDigit)
-    #print(RowDigit)
-    #print(ColDigit)
+
     initPos = (0, 0)
     if(backtracking(board, initPos, subMatrixDigit, RowDigit, ColDigit) is True):
         print('Solved')
@@ -28,38 +25,34 @@ def setUpBitwises(board):
 
     return (subMatrixDigit, RowDigit, ColDigit)
 
-guessRange = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+# For Debugging
+def printBitDigits(subMatrixDigit, ColDigit, RowDigit):
+    print(subMatrixDigit)
+    print(RowDigit)
+    print(ColDigit)
+
 # X: Num of col Y: Num of row. Loop row down row
 def backtracking(board, pos, subMatrixDigit, RowDigit, ColDigit):
     (x, y) = pos
-    #print("Checking y = ", y, " x = ", x)
-
     if(y == 9):
         return True 
 
     if(x == 9) :
-        y = y + 1
-        x = 0
-        print("Moving down a row")
-        return backtracking(board, (x, y), subMatrixDigit, RowDigit, ColDigit)    
+        return backtracking(board, (0, y+1), subMatrixDigit, RowDigit, ColDigit)    
 
     if(board[y][x] == 0):
-        #print("Found an empty")
         for i in range(1, 10):
-            #print("Pos y = ", y, " x = ", x , " test i = ", i)
             digit = 1 << (i - 1)
             if(not existed(digit, pos, subMatrixDigit, RowDigit, ColDigit)):
                 subMatrixDigit[int(y/3)][int(x/3)] |= digit
                 RowDigit[y] |= digit
                 ColDigit[x] |= digit
                 board[y][x] = i
-                print("y = ", y, " x = ", x, " is assigned ", i)
 
                 if(backtracking(board, (x+1, y), subMatrixDigit, RowDigit, ColDigit)):
                     return True
                 else:
                     # back track
-                    print("Nope. backtracking. Fixing y=" , y, " x = ", x)
                     subMatrixDigit[int(y/3)][int(x/3)] &= ~digit
                     RowDigit[y] &= ~digit
                     ColDigit[x] &= ~digit
@@ -69,10 +62,9 @@ def backtracking(board, pos, subMatrixDigit, RowDigit, ColDigit):
 
     return backtracking(board, (x+1, y), subMatrixDigit, RowDigit, ColDigit)
 
-
 def existed(digit, pos, subMatrixDigit, RowDigit, ColDigit):
     (x, y) = pos
-    return (subMatrixDigit[int(x/3)][int(y/3)] & digit) or (RowDigit[y] & digit) or (ColDigit[x] & digit)
+    return (subMatrixDigit[int(y/3)][int(x/3)] & digit) or (RowDigit[y] & digit) or (ColDigit[x] & digit)
 
 def printBoard(board, rowsNum, colsNum):
     for i in range(rowsNum):

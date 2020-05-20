@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title> Sudoku Solver </title>
+
+    <style type="text/css">
+        table {
+            margin:1em auto;
+        }
+        td {
+          height:30px;
+          width:30px;
+          border:1px solid;
+          text-align:center;
+        }
+        td:first-child {
+          border-left:solid;
+        }
+        td:nth-child(3n) {
+          border-right:solid ;
+        }
+        tr:first-child {
+          border-top:solid;
+        }
+        tr:nth-child(3n) td {
+          border-bottom:solid ;
+        }
+    </style>
+
+</head>
+<body>
+<h1> Home </h1>
+<center>
+  <form method="POST">
+    <table border = 1 id="sudoku_table">
+        {% for ip in strInput %}
+            {% if loop.index % 9 == 1 %}
+                </tr><tr>
+            {% endif %}
+
+            {% if ip == "0" %}
+                <td><input type="text" maxlength="1" size="1" name = {{loop.index - 1}}></td>
+            {% else %}
+                <td> {{ ip }} </td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+    </table>
+    <button type="submit" name="submitBtn" value="validate">Validate</button>
+    <a href="/solved"><button type="button">Solve</button></a>
+    </form>
+</center>
+
+</body>
+</html>

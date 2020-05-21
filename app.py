@@ -6,9 +6,8 @@ import copy
 
 app = Flask(__name__)
 
-board = []
-example = [
-            [3, 0, 6, 5, 0, 8, 4, 0, 0],
+board = [
+            [3, 3, 6, 5, 0, 8, 4, 0, 0],
             [5, 2, 0, 0, 0, 0, 0, 0, 0],
             [0, 8, 7, 0, 0, 0, 0, 3, 1],
             [0, 0, 3, 0, 1, 0, 0, 8, 0],
@@ -45,27 +44,14 @@ def index():
 
 @app.route("/home")
 def home():
-    return render_template("welcome.html")
-
-@app.route("/sudoku")
-def sudoku():
     global board
-    boardLevel = request.args.get('level')
-    if (boardLevel != "0"):
-        print('Generating random')
-        (respBoard, respCode) = getSudoku.getResponse(9, 2)
-        if respCode is True:
-            board = respBoard
-    else:
-        board = copy.deepcopy(example)
-
     generateBlankIndex()
     out = convertToString(board)
     return render_template("index.html", strInput=out, visibility="visible")
 
 
 # Get inputs from user when submitted
-@app.route("/sudoku", methods=["POST"])
+@app.route("/home", methods=["POST"])
 def getInputs():
     global board, blankIndex
     inputs = list(map(getEachInput, blankIndex))

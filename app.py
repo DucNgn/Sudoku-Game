@@ -1,10 +1,13 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, flash, request, render_template, redirect, url_for
+
 import algorithms
+import getSudoku
 import copy
 
 app = Flask(__name__)
 
-board = [
+board = []
+example = [
             [3, 0, 6, 5, 0, 8, 4, 0, 0],
             [5, 2, 0, 0, 0, 0, 0, 0, 0],
             [0, 8, 7, 0, 0, 0, 0, 3, 1],
@@ -14,18 +17,25 @@ board = [
             [1, 3, 0, 0, 0, 0, 2, 5, 0],
             [0, 0, 0, 0, 0, 0, 0, 7, 4],
             [0, 0, 5, 2, 0, 6, 3, 0, 0]]
-
-
 blankIndex = []
 
 
 def generateBlankIndex():
+    global board, blankIndex
     for y in range(9):
         for x in range(9):
             if(board[y][x] == 0):
                 index = 9*y + x
                 slot = str(index)
                 blankIndex.append(slot)
+
+
+def convertToString(target):
+    string = ''
+    for y in range(9):
+        for x in range(9):
+            string = string + str(target[y][x])
+    return string
 
 
 @app.route("/")
@@ -35,24 +45,45 @@ def index():
 
 @app.route("/home")
 def home():
-    out = convertToString(board)
-    return render_template("index.html", strInput=out)
+    return render_template("welcome.html")
 
-
-@app.route("/home", methods=["POST"])
-def getInputs():
-    inputs = list(map(getEachInput, blankIndex))
-    if(isValid(inputs)):
-        return "<h1> Correct </h1>"
+@app.route("/sudoku")
+def sudoku():
+    global board
+    boardLevel = request.args.get('level')
+    if (boardLevel != "0"):
+        print('Generating random')
+        (respBoard, respCode) = getSudoku.getResponse(9, 2)
+        if respCode is True:
+            board = respBoard
     else:
-        return "<h1> Wrong </h1>"
+        board = copy.deepcopy(example)
+
+    generateBlankIndex()
+    out = convertToString(board)
+    return render_template("index.html", strInput=out, visibility="visible")
+
+
+# Get inputs from user when submitted
+@app.route("/sudoku", methods=["POST"])
+def getInputs():
+    global board, blankIndex
+    inputs = list(map(getEachInput, blankIndex))
+    print(inputs)
+    if(isValid(inputs)):
+        flash("Congratulation !! You have solved the Sudoku board", "success")
+    else:
+        flash("Your solution is incorrect !!", "warning")
+    return redirect(request.url)
 
 
 def getEachInput(index):
     return request.form[index]
 
 
+# Validate the solution
 def isValid(inputs):
+    global board, blankIndex
     temp = copy.deepcopy(board)
     for (i, j) in zip(blankIndex, inputs):
         x = int(i) % 9
@@ -65,24 +96,21 @@ def isValid(inputs):
     return algorithms.isBoardValid(temp)
 
 
-def convertToString(target):
-    string = ''
-    for y in range(9):
-        for x in range(9):
-            string = string + str(target[y][x])
-    return string
-
-
+# Solve the Sudoku board
 @app.route("/solved")
 def render_solved():
+    global board
     (solvedBoard, solvable) = algorithms.solve(board)
-    out = convertToString(solvedBoard)
     if(solvable):
-        return render_template("index.html", strInput=out)
+        out = convertToString(solvedBoard)
+        flash("This Sudoku board is solved", "success")
+        return render_template("index.html", strInput=out, visibility="hidden")
     else:
-        return "<h1> The sudoku board is not solvable </h1>"
+        flash("This Sudoku board is unsolvable !!!", "error")
+        out = convertToString(board)
+        return render_template("index.html", strInput=out, visibility="hidden")
 
 
 if __name__ == '__main__':
-    generateBlankIndex()
+    app.secret_key = 'secret'
     app.run(debug=True)

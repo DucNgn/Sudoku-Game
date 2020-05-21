@@ -1,4 +1,4 @@
-# Sudoku Stimulation
+# Sudoku Game
 
 
 ## Build Guide:
@@ -12,6 +12,16 @@
 + `algorithms.py` contains the Backtracking algorithm used to find the solution for the board.
 + `app.py` contains the source code of the main Flask application.
 + `templates` folder contains the template in HTML and Jinja for Flask to control.
+
+## Plan for improving user experience:
+- [ ] Add graphical user interface for the application
+- [ ] Let user choose the difficult level of the game
+- [ ] Outputs random Sudoku board 
+
+## Plan to improve the project:
+- [ ] Add the naive approach algorithm
+- [ ] Examine and implement Stochastic search / optimization
+- [ ] Compare the runtime between algorithms
 
 ## Dependencies:
 + [Flask](https://flask.palletsprojects.com/en/1.1.x/)

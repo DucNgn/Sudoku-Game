@@ -1,5 +1,8 @@
 # Sudoku Game
-
+<p align="center">
+    <img src="demo/demoBoard.png">
+    <img src="demo/solvedDemo.png">
+</p>
 
 ## Build Guide:
 + Clone the repo

@@ -20,6 +20,7 @@
 - [ ] Add graphical user interface for the application
 - [ ] Let user choose the difficult level of the game
 - [ ] Outputs random Sudoku board 
+- [ ] Deploy to Heroku
 
 ## Plan to improve the project:
 - [ ] Add the naive approach algorithm

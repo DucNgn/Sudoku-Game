@@ -54,8 +54,12 @@ def home():
 @app.route("/home", methods=["POST"])
 def getInputs():
     global board, blankIndex
-    inputs = list(map(getEachInput, blankIndex))
-    print(inputs)
+    inputs = []
+    try:
+        inputs = list(map(getEachInput, blankIndex))
+    except ValueError:
+        flash("Invalid Input, please try again !!", "warning")
+        return redirect(request.url)
     if(isValid(inputs)):
         flash("Congratulation !! You have solved the Sudoku board", "success")
     else:
@@ -64,7 +68,14 @@ def getInputs():
 
 
 def getEachInput(index):
-    return request.form[index]
+    result = request.form[index]
+    try:
+        if result == '':
+            return result
+        int(result)
+        return result
+    except ValueError:
+        raise ValueError
 
 
 # Validate the solution
